@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react'
-import FileUploader from '@project/project-.jsx'
+import FileUploader from './project-.jsx'
 
 /** Score / compétences déterministes à partir du nom de fichier (démo sans backend) */
 function hashString(s) {

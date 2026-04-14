@@ -1,16 +1,31 @@
 """
 Tanit Talent AI — FastAPI microservice
-Rule-based skill extraction + scoring; chat responses (extensible to HuggingFace).
+Rule-based skill extraction + scoring; chat via OpenRouter when OPENROUTER_API_KEY is set.
 """
 from __future__ import annotations
 
+import os
 import re
 import uuid
 from typing import Any
 
-from fastapi import FastAPI, HTTPException
+import httpx
+from dotenv import load_dotenv
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+
+load_dotenv()
+
+OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
+OPENROUTER_MODEL = os.getenv("OPENROUTER_MODEL", "openai/gpt-4o-mini")
+OPENROUTER_REFERER = os.getenv("OPENROUTER_HTTP_REFERER", "http://localhost:5174")
+
+TANIT_SYSTEM = (
+    "You are Tanit Talent AI, a concise bilingual (French / English) assistant for job seekers "
+    "and recruiters on the Tanit Talent platform. Give short, practical answers about jobs, "
+    "CVs, interviews, and applications. Do not invent job offers; suggest using the app to browse listings."
+)
 
 app = FastAPI(title="Tanit Talent AI", version="1.0.0")
 
@@ -121,6 +136,39 @@ class ChatOut(BaseModel):
     message_id: str
 
 
+def openrouter_reply(messages: list[ChatMessage]) -> str | None:
+    key = (os.getenv("OPENROUTER_API_KEY") or "").strip()
+    if not key:
+        return None
+
+    payload_messages: list[dict[str, str]] = [{"role": "system", "content": TANIT_SYSTEM}]
+    for m in messages:
+        if m.role in ("user", "assistant"):
+            payload_messages.append({"role": m.role, "content": m.content})
+
+    headers = {
+        "Authorization": f"Bearer {key}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": OPENROUTER_REFERER,
+        "X-Title": "Tanit Talent AI",
+    }
+    try:
+        with httpx.Client(timeout=60.0) as client:
+            r = client.post(
+                OPENROUTER_URL,
+                json={"model": OPENROUTER_MODEL, "messages": payload_messages},
+                headers=headers,
+            )
+            r.raise_for_status()
+            data = r.json()
+            choice = data.get("choices", [{}])[0]
+            msg = choice.get("message") or {}
+            text = (msg.get("content") or "").strip()
+            return text or None
+    except Exception:
+        return None
+
+
 def rule_reply(user_text: str) -> str:
     t = user_text.lower().strip()
     if not t:
@@ -139,6 +187,10 @@ def rule_reply(user_text: str) -> str:
 
 @app.post("/chat", response_model=ChatOut)
 def post_chat(body: ChatIn) -> ChatOut:
+    llm = openrouter_reply(body.messages)
+    if llm:
+        return ChatOut(reply=llm, message_id=str(uuid.uuid4()))
+
     last = ""
     for m in reversed(body.messages):
         if m.role == "user":

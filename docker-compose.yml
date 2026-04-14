@@ -43,6 +43,9 @@ services:
       - "8000:8000"
     environment:
       DATABASE_URL: postgresql://postgres:admin123@postgres:5432/tanit
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      OPENROUTER_MODEL: ${OPENROUTER_MODEL:-openai/gpt-4o-mini}
+      OPENROUTER_HTTP_REFERER: ${OPENROUTER_HTTP_REFERER:-http://localhost:5174}
 
   frontend:
     build:

@@ -53,6 +53,8 @@ pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 ```
 
+Optional: copy `ai-service/.env.example` to `ai-service/.env` and set **`OPENROUTER_API_KEY`** ([OpenRouter](https://openrouter.ai/)) so the chat widget uses a real LLM instead of the built-in rule-based replies. You can set **`OPENROUTER_MODEL`** (e.g. `openai/gpt-4o-mini`).
+
 ### 3. Frontend
 
 ```bash

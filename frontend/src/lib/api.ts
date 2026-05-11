@@ -10,8 +10,12 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
     },
   })
   if (!res.ok) {
-    const err = await res.json().catch(() => ({}))
-    throw new Error((err as { error?: string }).error || res.statusText)
+    const err = (await res.json().catch(() => ({}))) as { error?: unknown }
+    let msg = res.statusText
+    const e = err.error
+    if (typeof e === 'string') msg = e
+    else if (e != null && typeof e === 'object') msg = JSON.stringify(e)
+    throw new Error(msg)
   }
   return res.json() as Promise<T>
 }

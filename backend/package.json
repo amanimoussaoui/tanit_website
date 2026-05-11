@@ -4,13 +4,14 @@
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "dev": "nodemon --exec tsx src/index.ts",
+    "dev": "nodemon --exec \"npx --no-install tsx\" src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
-    "db:seed": "tsx prisma/seed.ts"
+    "db:seed": "tsx prisma/seed.ts",
+    "fastapi:dev": "powershell -ExecutionPolicy Bypass -NoProfile -File ../ai-service/start.ps1"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -25,6 +26,7 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.1.1",
+    "nodemailer": "^8.0.7",
     "pdf-parse": "^1.1.4",
     "prisma": "5.22.0",
     "socket.io": "^4.8.3",
@@ -38,6 +40,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/multer": "^2.1.0",
     "@types/node": "^25.6.0",
+    "@types/nodemailer": "^8.0.0",
     "@types/pdf-parse": "^1.1.4",
     "nodemon": "^3.1.14",
     "tsx": "^4.21.0",

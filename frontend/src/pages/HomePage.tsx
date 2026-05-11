@@ -162,19 +162,17 @@ export function HomePage() {
                         ))}
                       </div>
                     </div>
-                    <div className="relative flex justify-center">
-                      <div className="relative flex size-[min(100%,380px)] items-end justify-center rounded-full bg-[var(--yellow)]">
-                        <svg viewBox="0 0 200 240" className="h-72 w-auto pb-4">
-                          <ellipse cx="100" cy="210" rx="70" ry="18" fill="rgba(0,0,0,0.08)" />
-                          <circle cx="100" cy="80" r="36" fill="#fff" stroke="#000" strokeWidth="2" />
-                          <path
-                            d="M100 116v52c-24 0-44 18-48 40h96c-4-22-24-40-48-40z"
-                            fill="#fff"
-                            stroke="#000"
-                            strokeWidth="2"
-                          />
-                          <rect x="58" y="150" width="84" height="56" rx="8" fill="#C5CAE9" stroke="#000" strokeWidth="2" />
-                        </svg>
+                    <div className="relative flex w-full items-center justify-center lg:justify-end">
+                      <div className="relative w-full overflow-hidden rounded-2xl border border-gray-200 shadow-xl ring-1 ring-black/[0.06]">
+                        <img
+                          src="/home-hero-research.png"
+                          alt="Professionnel au bureau, recherchant une opportunité sur un ordinateur portable"
+                          className="aspect-[4/3] w-full object-cover sm:aspect-video lg:aspect-[16/10]"
+                          width={1200}
+                          height={720}
+                          loading="eager"
+                          fetchPriority="high"
+                        />
                       </div>
                     </div>
                   </div>
@@ -223,12 +221,16 @@ export function HomePage() {
                 <section className="bg-[var(--bg)] py-12 lg:py-16">
                   <div className="mx-auto grid max-w-[1400px] gap-12 px-4 sm:px-6 lg:grid-cols-2 lg:px-8">
                     <div className="flex items-center justify-center">
-                      <div className="rounded-3xl border border-[var(--border)] bg-white p-8 shadow-sm">
-                        <svg viewBox="0 0 240 200" className="h-48 w-full max-w-sm">
-                          <rect width="240" height="200" rx="16" fill="var(--lavender)" opacity="0.4" />
-                          <circle cx="120" cy="90" r="40" fill="var(--yellow)" />
-                          <rect x="70" y="140" width="100" height="12" rx="4" fill="#000" opacity="0.2" />
-                        </svg>
+                      <div className="relative w-full overflow-hidden rounded-3xl border border-[var(--border)] bg-white shadow-lg ring-1 ring-black/[0.05]">
+                        <img
+                          src="/home-grow-career.png"
+                          alt="Équipe en réunion collaborative autour d’une table, écran de présentation en arrière-plan"
+                          className="aspect-[4/3] w-full object-cover sm:aspect-video lg:aspect-[5/4]"
+                          width={1200}
+                          height={960}
+                          loading="lazy"
+                          decoding="async"
+                        />
                       </div>
                     </div>
                     <div>

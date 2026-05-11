@@ -59,12 +59,31 @@ router.post('/upload', authRequired, requireRole('CANDIDATE', 'ADMIN'), upload.s
   const fastapi = process.env.FASTAPI_URL || 'http://localhost:8000'
   let score = 50
   let skills: string[] = []
+  let feedback = ''
+  let qualitySource = 'heuristic'
   try {
-    const { data } = await axios.post(`${fastapi}/score`, { cv_text: text }, { timeout: 30_000 })
+    const { data } = await axios.post(`${fastapi}/score`, { cv_text: text }, { timeout: 90_000 })
     if (typeof data.score === 'number') score = data.score
     if (Array.isArray(data.skills)) skills = data.skills
+    if (typeof data.feedback === 'string') feedback = data.feedback.trim()
+    if (typeof data.quality_source === 'string') qualitySource = data.quality_source
+    if (!feedback) {
+      feedback =
+        `Analyse IA reçue (score ${score}) sans synthèse textuelle. Mets à jour le service ai-service ou vérifie sa version.`
+    }
   } catch {
-    /* FastAPI optional at dev time */
+    qualitySource = 'unavailable'
+    const excerpt = text.replace(/\s+/g, ' ').trim().slice(0, 280)
+    const hintPdf =
+      text.trim().length < 80
+        ? `Peu de texte extrait du PDF (${text.trim().length} car.). Utilise un PDF avec du texte sélectionnable ou recadre les pages.\n`
+        : ''
+    feedback =
+      `${hintPdf}` +
+      `Impossible de joindre FastAPI (${fastapi}). ` +
+      `Démarrez le service : cd ai-service puis python -m uvicorn main:app --reload --port 8000. ` +
+      `Variable optionnelle côté backend : FASTAPI_URL. ` +
+      `En attendant, un score approximatif (${score}) est appliqué sans analyse détaillée.\n— Aperçu du texte extrait : « ${excerpt || '(vide)'} »`
   }
 
   const cvUrl = `/uploads/${path.basename(req.file.path)}`
@@ -74,7 +93,7 @@ router.post('/upload', authRequired, requireRole('CANDIDATE', 'ADMIN'), upload.s
     data: { cvUrl, skills: skills.length ? skills : candidate.skills, score },
   })
 
-  res.json({ cvUrl, score, skills, textPreview: text.slice(0, 500) })
+  res.json({ cvUrl, score, skills, textPreview: text.slice(0, 500), feedback, qualitySource })
 })
 
 export default router

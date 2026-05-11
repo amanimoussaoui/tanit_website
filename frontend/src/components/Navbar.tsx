@@ -38,8 +38,6 @@ function UserAvatar({ user }: { user: AuthUser }) {
 const mainLinks = [
   { to: '/jobs', label: 'Find Jobs' },
   { to: '/employers', label: 'Employers' },
-  { to: '/#pricing', label: 'Pricing' },
-  { to: '/#blog', label: 'Blog' },
   { to: '/#contact', label: 'Contact' },
 ]
 

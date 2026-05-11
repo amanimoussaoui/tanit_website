@@ -1,42 +1,30 @@
 import { cn } from '@/lib/utils'
 
 type Props = {
+  /** Fond clair (navbar) ou sombre (login) — léger ajustement visuel uniquement */
   variant?: 'dark' | 'light'
   className?: string
+  /** Conservé pour compatibilité ; le visuel complet est dans l’image. */
   showTagline?: boolean
 }
 
-export function TanitLogo({ variant = 'dark', className, showTagline = true }: Props) {
-  const fg = variant === 'dark' ? '#000' : '#fff'
-  const sub = variant === 'dark' ? '#4F4F4F' : 'rgba(255,255,255,0.65)'
+export function TanitLogo({ variant = 'dark', className }: Props) {
   return (
-    <div className={cn('flex items-center gap-3', className)}>
-      <div
-        className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-black shadow-sm"
-        style={{ borderRadius: 8 }}
-        aria-hidden
-      >
-        <svg width="36" height="36" viewBox="0 0 40 40" fill="none">
-          <circle cx="20" cy="14" r="8" fill="#F9E98E" />
-          <path
-            d="M8 30c2-8 8-12 12-12s10 4 12 12"
-            stroke="#F9E98E"
-            strokeWidth="3"
-            strokeLinecap="round"
-            fill="none"
-          />
-        </svg>
-      </div>
-      <div className="leading-tight">
-        <div className="font-heading text-lg font-extrabold tracking-tight" style={{ color: fg }}>
-          TANIT TALENT
-        </div>
-        {showTagline && (
-          <div className="text-[10px] font-semibold uppercase tracking-[0.2em]" style={{ color: sub }}>
-            AI Platform
-          </div>
-        )}
-      </div>
+    <div
+      className={cn(
+        'flex shrink-0 items-center',
+        variant === 'light' && 'drop-shadow-[0_1px_8px_rgba(0,0,0,0.35)]',
+        className,
+      )}
+    >
+      <img
+        src="/logo-tanithire.png"
+        alt="TANITHIRE — Une plateforme de recrutement en ligne"
+        className="h-9 w-auto max-h-11 max-w-[min(260px,72vw)] object-contain object-left sm:h-10"
+        width={260}
+        height={48}
+        decoding="async"
+      />
     </div>
   )
 }

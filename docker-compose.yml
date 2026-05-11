@@ -29,6 +29,14 @@ services:
       FASTAPI_URL: http://fastapi:8000
       FRONTEND_ORIGIN: http://localhost:5173
       UPLOAD_DIR: /app/uploads
+      # Optionnel : définir dans un fichier `.env` à la racine du dépôt (voir docker-compose.env.example)
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-false}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      SMTP_FROM: ${SMTP_FROM:-}
+      SMTP_DEBUG: ${SMTP_DEBUG:-}
     volumes:
       - backend_uploads:/app/uploads
     depends_on:
@@ -45,7 +53,7 @@ services:
       DATABASE_URL: postgresql://postgres:admin123@postgres:5432/tanit
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
       OPENROUTER_MODEL: ${OPENROUTER_MODEL:-openai/gpt-4o-mini}
-      OPENROUTER_HTTP_REFERER: ${OPENROUTER_HTTP_REFERER:-http://localhost:5174}
+      OPENROUTER_HTTP_REFERER: ${OPENROUTER_HTTP_REFERER:-http://localhost:5173}
 
   frontend:
     build:

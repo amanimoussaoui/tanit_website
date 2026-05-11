@@ -10,6 +10,9 @@
  *
  * Cette page HTML envoie login candidat puis POST /api/cv/upload (Multer → PDF → FastAPI /score).
  * L’implémentation est dans : frontend/public/project-ai-cv.html
+ *
+ * Intégration React (dashboard candidat) : composant exporté `TanitCvQualityUploader`
+ * dans `project-.jsx` à la racine du repo (upload PDF → /api/cv/upload → score qualité).
  */
 
 void 0

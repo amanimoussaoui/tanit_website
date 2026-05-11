@@ -37,8 +37,13 @@ router.get('/', optionalAuth, async (req, res) => {
     andConditions.push({ type: { equals: q.type, mode: 'insensitive' } })
   }
   if (q.salaryMin != null) {
+    // Inclure les offres sans fourchette (null/null) : sinon elles disparaîtraient dès qu’un « salaire min » est demandé (ex. défaut UI).
     andConditions.push({
-      OR: [{ salaryMax: { gte: q.salaryMin } }, { salaryMin: { gte: q.salaryMin } }],
+      OR: [
+        { salaryMax: { gte: q.salaryMin } },
+        { salaryMin: { gte: q.salaryMin } },
+        { AND: [{ salaryMin: null }, { salaryMax: null }] },
+      ],
     })
   }
 

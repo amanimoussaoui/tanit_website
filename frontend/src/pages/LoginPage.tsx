@@ -77,7 +77,7 @@ export function LoginPage() {
             ))}
           </ul>
         </div>
-        <p className="relative z-10 text-xs text-white/50">© Tanit Talent AI</p>
+        <p className="relative z-10 text-xs text-white/50">© TANITHIRE</p>
       </div>
 
       <div className="flex items-center justify-center bg-[var(--bg)] p-6">

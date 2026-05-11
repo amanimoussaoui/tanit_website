@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { PageTransition } from '@/components/PageTransition'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -11,6 +11,7 @@ import { apiFetch } from '@/lib/api'
 
 export function PostJobPage() {
   const nav = useNavigate()
+  const qc = useQueryClient()
   const [title, setTitle] = useState('')
   const [type, setType] = useState('Full-time')
   const [location, setLocation] = useState('')
@@ -38,7 +39,10 @@ export function PostJobPage() {
             .filter(Boolean),
         }),
       }),
-    onSuccess: () => nav('/jobs'),
+    onSuccess: async () => {
+      await qc.invalidateQueries({ queryKey: ['jobs'] })
+      nav('/jobs')
+    },
   })
 
   return (

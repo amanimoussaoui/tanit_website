@@ -74,15 +74,79 @@ Optional: `frontend/.env` with `VITE_API_URL=http://localhost:3001` (Socket.io +
 | Employer | employer@tanit.demo  | password123  |
 | Candidate| candidate@tanit.demo | password123  |
 
-## Docker Compose
+## Docker Compose (Windows / Linux)
 
-With Docker installed:
+### Prérequis
+
+1. Installer [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Windows : activer WSL 2 si proposé).
+2. Vérifier dans un terminal : `docker --version` et `docker compose version`.
+
+### Variables d’environnement (optionnel)
+
+À la racine du dépôt, copier [docker-compose.env.example](docker-compose.env.example) vers `.env` et renseigner au besoin :
+
+- **OpenRouter** (`OPENROUTER_API_KEY`, etc.) pour le service FastAPI dans Compose.
+- **SMTP** (`SMTP_HOST`, `SMTP_USER`, `SMTP_PASS`, …) pour les e-mails envoyés par le backend (candidatures / décisions).
+
+Compose injecte automatiquement ces variables dans les services (voir [docker-compose.yml](docker-compose.yml)).
+
+### Démarrage
+
+À la racine du dépôt (`website/`) :
 
 ```bash
 docker compose up --build
 ```
 
-Services: Postgres (`tanit`), FastAPI, backend, frontend (nginx on port 5173). Adjust `JWT_SECRET` and CORS for production.
+Ou en arrière-plan :
+
+```bash
+docker compose up --build -d
+```
+
+**Windows (PowerShell)** — script qui construit, démarre et vérifie le health du backend :
+
+```powershell
+.\scripts\docker-stack.ps1
+```
+
+Avec données de démo (après les conteneurs OK) :
+
+```powershell
+.\scripts\docker-stack.ps1 -Seed
+```
+
+Ou manuellement :
+
+```bash
+docker compose exec backend npx --yes tsx prisma/seed.ts
+```
+
+### URLs (ports exposés sur la machine hôte)
+
+| Service    | URL |
+|------------|-----|
+| Frontend (nginx) | http://localhost:5173 |
+| API          | http://localhost:3001 — `GET /health` |
+| FastAPI      | http://localhost:8000/docs |
+| PostgreSQL   | `localhost:5432` (utilisateur `postgres`, mot de passe `admin123`, base `tanit`) |
+
+**Attention :** en développement sans Docker, Vite utilise souvent le port **5174** ([frontend/vite.config.ts](frontend/vite.config.ts)). Avec Docker, le frontend est servi sur **5173** ; le backend Compose définit `FRONTEND_ORIGIN=http://localhost:5173` pour le CORS.
+
+### Arrêt
+
+```bash
+docker compose down
+```
+
+Pour supprimer aussi les volumes Postgres : `docker compose down -v`.
+
+### Dépannage
+
+- **Ports déjà utilisés** (3001, 5173, 5432, 8000) : libérer le port ou modifier les mappages dans `docker-compose.yml`.
+- **Logs** : `docker compose logs backend`, `docker compose logs postgres`, `docker compose logs frontend`.
+
+En production, changez `JWT_SECRET`, les secrets Postgres et la configuration CORS.
 
 ## Project layout
 
